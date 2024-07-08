@@ -74,7 +74,7 @@ int main()
         }
     }
 
-    for (int epoch = 0; epoch < 5; epoch++)
+    for (int epoch = 0; epoch < 10; epoch++)
     {
         cout << epoch << ") " << endl;
         string folderPath = "training";
