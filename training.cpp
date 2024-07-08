@@ -16,7 +16,7 @@ double sigmoid(double S)
 
 vector<vector<double>> readCSV(const string& filename)
 {
-    vector<vector<double>> data; // Двумерный вектор для хранения данных
+    vector<vector<double>> data; // двумерный вектор для хранения данных
 
     ifstream file(filename);
     if (!file.is_open())
@@ -27,20 +27,20 @@ vector<vector<double>> readCSV(const string& filename)
 
     string line;
 
-    // Чтение файла построчно
+    // чтение файла построчно
     while (getline(file, line))
     {
         vector<double> row;
         istringstream iss(line);
         string cell;
 
-        // Разделение строки на ячейки по разделителю ';'
+        // разделение строки на ячейки по разделителю ';'
         while (getline(iss, cell, ';'))
         {
-            row.push_back(stod(cell)); // Преобразование строки в число типа double и добавление в вектор 
+            row.push_back(stod(cell)); // преобразование строки в число типа double и добавление в вектор 
         }
 
-        data.push_back(row); // Добавление строки в двумерный вектор
+        data.push_back(row); // добавление строки в двумерный вектор
     }
 
     file.close();
@@ -52,37 +52,27 @@ int main()
     vector <vector<double>> weights_1(785, vector<double>(81)); // веса для in -> hidden
     vector <vector<double>> weights_2(81, vector<double>(10)); // веса для hidden -> out
 
-    weights_1 = readCSV("new_1.csv"); // веса для in -> hidden
-    weights_2 = readCSV("new_2.csv"); // веса для hidden -> out
-
     random_device rd;
     mt19937 generator(rd()); // генератор случайных чисел
     uniform_real_distribution<double> distribution(-0.5, 0.5);
 
-    ofstream new_1("weights_1.csv");
-    ofstream new_2("weights_2.csv");
+    // генеририруем веса для in -> hidden
+    for (int i = 0; i < 785; i++)
+    {
+        for (int j = 0; j < 81; j++)
+        {
+            weights_1[i][j] = distribution(generator); // веса связей между нейронами
+        }
+    }
 
-    //// генеририруем веса для in -> hidden
-    //for (int i = 0; i < 785; i++)
-    //{
-    //    for (int j = 0; j < 81; j++)
-    //    {
-    //        weights_1[i][j] = distribution(generator); // веса связей между нейронами
-    //        old_1 << setprecision(32) << weights_1[i][j] << ";";
-    //    }
-    //    old_1 << endl;
-    //}
-
-    //// генерируем веса для hidden->out
-    //for (int i = 0; i < 81; i++)
-    //{
-    //    for (int j = 0; j < 10; j++)
-    //    {
-    //        weights_2[i][j] = distribution(generator); // веса связей между нейронами
-    //        old_2 << weights_2[i][j] << ";";
-    //    }
-    //    old_2 << endl;
-    //}
+    // генерируем веса для hidden->out
+    for (int i = 0; i < 81; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            weights_2[i][j] = distribution(generator); // веса связей между нейронами
+        }
+    }
 
     for (int epoch = 0; epoch < 5; epoch++)
     {
@@ -98,7 +88,6 @@ int main()
             vector<double> out(10, 0.0); // выход
             vector<double> target(10, 0.0); // целевое значение
 
-
             // получаем путь к текущему файлу
             string filePath = entry.path().string();
             cout << "Reading file: " << filePath << endl;
@@ -113,9 +102,8 @@ int main()
             }
             cout << endl;
 
-            //ПРЯМОЙ ПРОГОН
-            // считываем изображение с помощью OpenCV
-            Mat image = imread(filePath, IMREAD_GRAYSCALE);
+            // ПРЯМОЕ РАСПРОСТРАНЕНИЕ
+            Mat image = imread(filePath, IMREAD_GRAYSCALE); // считываем изображение с помощью OpenCV
 
             threshold(image, image, 0, 1, THRESH_BINARY);
             int count = 0;
@@ -157,7 +145,7 @@ int main()
             }
             cout << endl;
 
-            // ОБРАТНЫЙ ПРОГОН (BACK PROPAGATION)
+            // ОБРАТНОЕ РАСПРОСТРАНЕНИЕ (BACK PROPAGATION)
             double lambda = 0.1;
             vector <double> dE_dS_1(81, 0.0);
 
@@ -186,6 +174,10 @@ int main()
         }
     }
 
+    ifstream new_1("weights_1.csv");
+    ifstream new_2("weights_2.csv");
+
+    //  запись весов в файл
     for (int i = 0; i < 785; i++)
     {
         for (int j = 0; j < 81; j++)
@@ -203,7 +195,6 @@ int main()
         }
         new_2 << "\n";
     }
-
     
     cout << "Training complete!" << endl;
 
