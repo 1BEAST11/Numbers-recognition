@@ -12,7 +12,7 @@ double activate(double S)
 
 vector<vector<double>> readCSV(const string& filename)
 {
-    vector<vector<double>> data; // Двумерный вектор для хранения данных
+    vector<vector<double>> data; // двумерный вектор для хранения данных
 
     ifstream file(filename);
     if (!file.is_open())
@@ -23,14 +23,14 @@ vector<vector<double>> readCSV(const string& filename)
 
     string line;
 
-    // Чтение файла построчно
+    // чтение файла построчно
     while (getline(file, line))
     {
         vector<double> row;
         istringstream iss(line);
         string cell;
 
-        // Разделение строки на ячейки по разделителю ';'
+        // разделение строки на ячейки по разделителю ';'
         while (getline(iss, cell, ';'))
         {
             row.push_back(stod(cell)); // Преобразование строки в число типа double и добавление в вектор 
@@ -44,8 +44,8 @@ vector<vector<double>> readCSV(const string& filename)
 
 int main()
 {
-    string new_1 = "D:/Учеба/Машинное обучение и нейронные сети/4/weights_1.csv";
-    string new_2 = "D:/Учеба/Машинное обучение и нейронные сети/4/weights_2.csv";
+    string new_1 = "weights_1.csv";
+    string new_2 = "weights_2.csv";
 
     vector <vector<double>> weights_1(785, vector<double>(81)); // веса для in -> hidden
     vector<vector<double>> weights_2(81, vector<double>(10)); // веса для hidden -> out
@@ -67,20 +67,17 @@ int main()
 
         // считываем изображение с помощью OpenCV
         Mat image = imread(filePath, IMREAD_GRAYSCALE);
-
-        // bitwise_not(image, image);
         threshold(image, image, 0, 1, THRESH_BINARY);
+        
         int count = 0;
         for (int i = 0; i < image.rows; ++i)
         {
             for (int j = 0; j < image.cols; ++j)
             {
                 double pixel = static_cast<double>(image.at<uchar>(i, j));
-                //cout << pixel << " ";
                 in[count] = pixel; // выходы нейронов слоя слоя "in"
                 count++;
             }
-            //cout << endl;
         }
         in[784] = 1.0; // нейрон смещения слоя "in"
 
@@ -109,11 +106,9 @@ int main()
            cout << i << ") " << out[i] << endl;
         }
         cout << endl;
-        // Находим итератор на максимальный элемент вектора
-        auto max_it = max_element(out.begin(), out.end());
-
-        // Получаем индекс максимального элемента
-        int max_index = distance(out.begin(), max_it);
+        
+        auto max_it = max_element(out.begin(), out.end()); // находим итератор на максимальный элемент вектора
+        int max_index = distance(out.begin(), max_it); // получаем индекс максимального элемента
 
         cout << "Number on your picture: " << max_index << endl << endl;
 
@@ -125,7 +120,6 @@ int main()
             break;
         }
     }
-
     return 0;
 }
 
