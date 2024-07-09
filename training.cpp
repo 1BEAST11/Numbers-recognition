@@ -14,39 +14,6 @@ double sigmoid(double S)
     return 1 / (1 + exp(-S)); // функция активации - сигмоид
 }
 
-vector<vector<double>> readCSV(const string& filename)
-{
-    vector<vector<double>> data; // двумерный вектор для хранения данных
-
-    ifstream file(filename);
-    if (!file.is_open())
-    {
-        cerr << "Ошибка при открытии файла!" << endl;
-        return data;
-    }
-
-    string line;
-
-    // чтение файла построчно
-    while (getline(file, line))
-    {
-        vector<double> row;
-        istringstream iss(line);
-        string cell;
-
-        // разделение строки на ячейки по разделителю ';'
-        while (getline(iss, cell, ';'))
-        {
-            row.push_back(stod(cell)); // преобразование строки в число типа double и добавление в вектор 
-        }
-
-        data.push_back(row); // добавление строки в двумерный вектор
-    }
-
-    file.close();
-    return data;
-}
-
 int main()
 {
     vector <vector<double>> weights_1(785, vector<double>(81)); // веса для in -> hidden
@@ -174,8 +141,8 @@ int main()
         }
     }
 
-    ifstream new_1("weights_1.csv");
-    ifstream new_2("weights_2.csv");
+    ofstream new_1("weights_1.csv");
+    ofstream new_2("weights_2.csv");
 
     //  запись весов в файл
     for (int i = 0; i < 785; i++)
